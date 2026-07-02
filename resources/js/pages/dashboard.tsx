@@ -201,7 +201,10 @@ export default function Dashboard({
                                 </p>
                             </div>
                             <Button variant="ghost" size="sm" asChild>
-                                <Link href="/admin/messages">
+                                <Link
+                                    href="/admin/messages"
+                                    aria-label="Open inbox"
+                                >
                                     <ArrowRight />
                                 </Link>
                             </Button>

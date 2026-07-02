@@ -230,8 +230,20 @@ function renderBoolean(record: ContentRecord) {
     );
 }
 
-function renderDate(record: ContentRecord) {
-    return formatDate(record.published_at ?? record.issued_at ?? record.created_at);
+function renderPublishedDate(record: ContentRecord) {
+    return formatDate(record.published_at ?? record.created_at);
+}
+
+function renderIssuedDate(record: ContentRecord) {
+    return formatDate(record.issued_at);
+}
+
+function renderCreatedDate(record: ContentRecord) {
+    return formatDate(record.created_at);
+}
+
+function renderUpdatedDate(record: ContentRecord) {
+    return formatDate(record.updated_at);
 }
 
 function renderPercent(record: ContentRecord) {
@@ -444,6 +456,7 @@ export default function ContentPage({
                                                                 asChild
                                                             >
                                                                 <Link
+                                                                    aria-label={`Open ${recordTitle(record)}`}
                                                                     href={
                                                                         recordPath
                                                                     }
