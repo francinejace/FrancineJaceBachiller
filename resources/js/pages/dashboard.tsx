@@ -234,7 +234,7 @@ export default function Dashboard({
                                                     )}
                                                 </div>
                                                 <p className="mt-1 truncate text-sm text-muted-foreground">
-                                                    {message.name} ·{' '}
+                                                    {message.name} -{' '}
                                                     {message.email}
                                                 </p>
                                                 <p className="mt-2 text-sm leading-6">
