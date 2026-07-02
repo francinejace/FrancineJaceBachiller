@@ -1,5 +1,17 @@
 import { Link } from '@inertiajs/react';
-import { BookOpen, FolderGit2, LayoutGrid } from 'lucide-react';
+import {
+    Award,
+    Briefcase,
+    ExternalLink,
+    Folder,
+    Image,
+    Inbox,
+    LayoutGrid,
+    Settings,
+    Star,
+    Trophy,
+    Users,
+} from 'lucide-react';
 import AppLogo from '@/components/app-logo';
 import { NavFooter } from '@/components/nav-footer';
 import { NavMain } from '@/components/nav-main';
@@ -22,18 +34,58 @@ const mainNavItems: NavItem[] = [
         href: dashboard(),
         icon: LayoutGrid,
     },
+    {
+        title: 'Projects',
+        href: '/admin/content/projects',
+        icon: Folder,
+    },
+    {
+        title: 'Skills',
+        href: '/admin/content/skills',
+        icon: Star,
+    },
+    {
+        title: 'Experience',
+        href: '/admin/content/experiences',
+        icon: Briefcase,
+    },
+    {
+        title: 'Leadership',
+        href: '/admin/content/leaderships',
+        icon: Users,
+    },
+    {
+        title: 'Awards',
+        href: '/admin/content/awards',
+        icon: Trophy,
+    },
+    {
+        title: 'Certifications',
+        href: '/admin/content/certifications',
+        icon: Award,
+    },
+    {
+        title: 'Gallery',
+        href: '/admin/content/gallery',
+        icon: Image,
+    },
+    {
+        title: 'Messages',
+        href: '/admin/messages',
+        icon: Inbox,
+    },
+    {
+        title: 'Settings',
+        href: '/admin/content/settings',
+        icon: Settings,
+    },
 ];
 
 const footerNavItems: NavItem[] = [
     {
-        title: 'Repository',
-        href: 'https://github.com/laravel/react-starter-kit',
-        icon: FolderGit2,
-    },
-    {
-        title: 'Documentation',
-        href: 'https://laravel.com/docs/starter-kits#react',
-        icon: BookOpen,
+        title: 'Public Portfolio',
+        href: '/',
+        icon: ExternalLink,
     },
 ];
 
