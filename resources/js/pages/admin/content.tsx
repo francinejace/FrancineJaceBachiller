@@ -87,7 +87,7 @@ const columnsByResource: Record<string, Column[]> = {
         { key: 'title', label: 'Certification', render: renderTitle },
         { key: 'issuer', label: 'Issuer' },
         { key: 'status', label: 'Status', render: renderStatus },
-        { key: 'issued_at', label: 'Issued', render: renderDate },
+        { key: 'issued_at', label: 'Issued', render: renderIssuedDate },
     ],
     experiences: [
         { key: 'title', label: 'Experience', render: renderTitle },
@@ -111,7 +111,11 @@ const columnsByResource: Record<string, Column[]> = {
         { key: 'title', label: 'Project', render: renderTitle },
         { key: 'status', label: 'Status', render: renderStatus },
         { key: 'featured', label: 'Featured', render: renderBoolean },
-        { key: 'published_at', label: 'Published', render: renderDate },
+        {
+            key: 'published_at',
+            label: 'Published',
+            render: renderPublishedDate,
+        },
     ],
     settings: [
         { key: 'setting_key', label: 'Setting', render: renderTitle },
@@ -276,8 +280,8 @@ function columnsFor(resource: string): Column[] {
     return (
         columnsByResource[resource] ?? [
             { key: 'title', label: 'Record', render: renderTitle },
-            { key: 'created_at', label: 'Created', render: renderDate },
-            { key: 'updated_at', label: 'Updated', render: renderDate },
+            { key: 'created_at', label: 'Created', render: renderCreatedDate },
+            { key: 'updated_at', label: 'Updated', render: renderUpdatedDate },
         ]
     );
 }
