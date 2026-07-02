@@ -14,10 +14,13 @@ use App\Models\Skill;
 use App\Models\SkillCategory;
 use App\Models\SocialLink;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Http\RedirectResponse;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 use Illuminate\Validation\Rule;
+use Inertia\Inertia;
+use Inertia\Response as InertiaResponse;
 
 class PortfolioContentController extends Controller
 {
@@ -37,11 +40,15 @@ class PortfolioContentController extends Controller
         'settings' => Setting::class,
     ];
 
-    public function index(string $resource): JsonResponse
+    public function index(Request $request, string $resource): JsonResponse|InertiaResponse
     {
         $model = $this->modelFor($resource);
 
         $query = $model::query();
+
+        if ($resource === 'projects') {
+            $query->with('images');
+        }
 
         if (method_exists($model, 'scopeOrdered')) {
             $query->ordered();
@@ -49,18 +56,34 @@ class PortfolioContentController extends Controller
             $query->latest();
         }
 
-        return response()->json($query->paginate(20));
+        $records = $query->paginate(20)->withQueryString();
+
+        if ($request->expectsJson()) {
+            return response()->json($records);
+        }
+
+        return Inertia::render('admin/content', [
+            'resource' => $resource,
+            'resourceLabel' => $this->labelFor($resource),
+            'records' => $records,
+            'modules' => $this->modules(),
+        ]);
     }
 
-    public function store(Request $request, string $resource): JsonResponse
+    public function store(Request $request, string $resource): JsonResponse|RedirectResponse
     {
         $model = $this->modelFor($resource);
         $data = $request->validate($this->rulesFor($resource));
+        $record = $model::create($data);
 
-        return response()->json($model::create($data), 201);
+        if ($request->expectsJson()) {
+            return response()->json($record, 201);
+        }
+
+        return back()->with('success', $this->labelFor($resource).' created.');
     }
 
-    public function update(Request $request, string $resource, int $id): JsonResponse
+    public function update(Request $request, string $resource, int $id): JsonResponse|RedirectResponse
     {
         $model = $this->modelFor($resource)::query()->findOrFail($id);
         $rules = collect($this->rulesFor($resource))
@@ -71,15 +94,23 @@ class PortfolioContentController extends Controller
 
         $model->update($request->validate($rules));
 
-        return response()->json($model->fresh());
+        if ($request->expectsJson()) {
+            return response()->json($model->fresh());
+        }
+
+        return back()->with('success', $this->labelFor($resource).' updated.');
     }
 
-    public function destroy(string $resource, int $id): JsonResponse
+    public function destroy(Request $request, string $resource, int $id): JsonResponse|RedirectResponse
     {
         $model = $this->modelFor($resource)::query()->findOrFail($id);
         $model->delete();
 
-        return response()->json(status: 204);
+        if ($request->expectsJson()) {
+            return response()->json(status: 204);
+        }
+
+        return back()->with('success', $this->labelFor($resource).' deleted.');
     }
 
     /**
@@ -90,6 +121,37 @@ class PortfolioContentController extends Controller
         abort_unless(isset($this->resources[$resource]), 404);
 
         return $this->resources[$resource];
+    }
+
+    /**
+     * @return array<int, array{name: string, resource: string, count: int}>
+     */
+    private function modules(): array
+    {
+        return collect($this->resources)
+            ->map(fn (string $model, string $resource): array => [
+                'name' => $this->labelFor($resource),
+                'resource' => $resource,
+                'count' => $model::count(),
+            ])
+            ->values()
+            ->all();
+    }
+
+    private function labelFor(string $resource): string
+    {
+        return [
+            'projects' => 'Projects',
+            'skills' => 'Skills',
+            'skill-categories' => 'Skill Categories',
+            'experiences' => 'Experience',
+            'leaderships' => 'Leadership',
+            'awards' => 'Awards',
+            'certifications' => 'Certifications',
+            'gallery' => 'Gallery',
+            'social-links' => 'Social Links',
+            'settings' => 'Settings',
+        ][$resource] ?? (string) str($resource)->replace('-', ' ')->title();
     }
 
     /**
