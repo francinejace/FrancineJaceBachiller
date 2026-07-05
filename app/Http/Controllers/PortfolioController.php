@@ -12,7 +12,7 @@ class PortfolioController extends Controller
 
     public function home(): Response
     {
-        return Inertia::render('welcome', $this->portfolioData->publicPayload('home'));
+        return Inertia::render('portfolio', $this->portfolioData->publicPayload('home'));
     }
 
     public function about(): Response
